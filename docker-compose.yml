@@ -10,6 +10,8 @@ services:
       MYSQL_PASSWORD: password
     volumes:
       - var_lib_mysql:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     networks:
       - slurm-network
 
@@ -26,6 +28,10 @@ services:
       - etc_munge:/etc/munge
       - etc_slurm:/etc/slurm
       - var_log_slurm:/var/log/slurm
+      - /home/ubuntu/scratch:/scratch
+      - /home/ubuntu/modulesfiles:/usr/share/modulefiles
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     expose:
       - "6819"
     depends_on:
@@ -43,6 +49,11 @@ services:
       - etc_slurm:/etc/slurm
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
+      - /home/ubuntu/scratch:/scratch
+      - /home/ubuntu/modulesfiles:/usr/share/modulefiles
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - home:/home
     expose:
       - "6817"
     depends_on:
@@ -60,6 +71,11 @@ services:
       - etc_slurm:/etc/slurm
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
+      - /home/ubuntu/scratch:/scratch
+      - /home/ubuntu/modulesfiles:/usr/share/modulefiles
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - home:/home
     expose:
       - "6818"
     depends_on:
@@ -77,6 +93,11 @@ services:
       - etc_slurm:/etc/slurm
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
+      - /home/ubuntu/scratch:/scratch
+      - /home/ubuntu/modulesfiles:/usr/share/modulefiles
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - home:/home
     expose:
       - "6818"
     depends_on:
@@ -99,8 +120,13 @@ services:
       - etc_slurm:/etc/slurm
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
+      - /home/ubuntu/scratch:/scratch
+      - /home/ubuntu/modulesfiles:/usr/share/modulefiles
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - home:/home
     ports:
-      - "2222:22"
+      - "22:22"
     expose:
       - "6818"
     depends_on:
@@ -114,6 +140,7 @@ volumes:
   slurm_jobdir:
   var_lib_mysql:
   var_log_slurm:
+  home:
 
 networks:
   slurm-network:

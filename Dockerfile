@@ -13,6 +13,8 @@ RUN set -ex \
     && yum config-manager --set-enabled powertools \
     && yum -y install \
        wget \
+       nano \
+       environment-modules \
        bzip2 \
        perl \
        gcc \
@@ -25,6 +27,7 @@ RUN set -ex \
        python3-devel \
        python3-pip \
        python3 \
+       python3.12 \
        mariadb-server \
        mariadb-devel \
        psmisc \
@@ -32,12 +35,17 @@ RUN set -ex \
        vim-enhanced \
        http-parser-devel \
        json-c-devel \
+       mailx \
     && yum clean all \
     && rm -rf /var/cache/yum
 
 RUN alternatives --set python /usr/bin/python3
 
 RUN pip3 install Cython pytest
+
+RUN python3.12 -m ensurepip --upgrade
+
+RUN python3.12 -m pip install --prefix=/opt/python3.12 numpy matplotlib
 
 ARG GOSU_VERSION=1.17
 
@@ -88,9 +96,13 @@ RUN set -x \
 
 COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
+COPY mail.rc /etc/mail.rc
 RUN set -x \
     && chown slurm:slurm /etc/slurm/slurmdbd.conf \
-    && chmod 600 /etc/slurm/slurmdbd.conf
+    && chown slurm:slurm /usr/bin/mailx \
+    && chmod 600 /etc/slurm/slurmdbd.conf \
+    && chmod 750 /usr/bin/mailx
+
 
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
