@@ -67,3 +67,7 @@ fwdretain subject date from to
 
 # For Linux and BSD, this should be set.
 set bsdcompat
+
+#Nectar mail relay
+set smtp=smtp://nectar-smtp-relay.intersect.org.au
+set from="Intersect Slurm Controller <slurm@intersect.org.au>"

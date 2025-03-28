@@ -36,6 +36,7 @@ RUN set -ex \
        http-parser-devel \
        json-c-devel \
        mailx \
+       rsync \
     && yum clean all \
     && rm -rf /var/cache/yum
 
@@ -46,6 +47,8 @@ RUN pip3 install Cython pytest
 RUN python3.12 -m ensurepip --upgrade
 
 RUN python3.12 -m pip install --prefix=/opt/python3.12 numpy matplotlib
+
+RUN mv /usr/bin/python3.12 /opt/python3.12/bin/python
 
 ARG GOSU_VERSION=1.17
 
@@ -94,6 +97,7 @@ RUN set -x \
     && chown -R slurm:slurm /var/*/slurm* \
     && /sbin/create-munge-key
 
+COPY sbatch-wrapper.sh /usr/local/bin/sbatch-wrapper.sh
 COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 COPY mail.rc /etc/mail.rc
@@ -101,9 +105,10 @@ RUN set -x \
     && chown slurm:slurm /etc/slurm/slurmdbd.conf \
     && chown slurm:slurm /usr/bin/mailx \
     && chmod 600 /etc/slurm/slurmdbd.conf \
-    && chmod 750 /usr/bin/mailx
-
-
+    && chmod 750 /usr/bin/mailx \
+    && chmod 755 /usr/local/bin/sbatch-wrapper.sh
+RUN mv /usr/bin/sbatch /usr/bin/sbatch.real
+RUN ln -s /usr/local/bin/sbatch-wrapper.sh /usr/bin/sbatch
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

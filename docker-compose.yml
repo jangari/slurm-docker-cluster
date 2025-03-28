@@ -105,6 +105,137 @@ services:
     networks:
       - slurm-network
 
+  c3:
+    image: slurm-docker-cluster:${IMAGE_TAG}
+    command: ["slurmd"]
+    hostname: c3
+    container_name: c3
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - /home/ubuntu/scratch:/scratch
+      - /home/ubuntu/modulesfiles:/usr/share/modulefiles
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - home:/home
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    networks:
+      - slurm-network
+
+  c4:
+    image: slurm-docker-cluster:${IMAGE_TAG}
+    command: ["slurmd"]
+    hostname: c4
+    container_name: c4
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - /home/ubuntu/scratch:/scratch
+      - /home/ubuntu/modulesfiles:/usr/share/modulefiles
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - home:/home
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    networks:
+      - slurm-network
+  c5:
+    image: slurm-docker-cluster:${IMAGE_TAG}
+    command: ["slurmd"]
+    hostname: c5
+    container_name: c5
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - /home/ubuntu/scratch:/scratch
+      - /home/ubuntu/modulesfiles:/usr/share/modulefiles
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - home:/home
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    networks:
+      - slurm-network
+
+  c6:
+    image: slurm-docker-cluster:${IMAGE_TAG}
+    command: ["slurmd"]
+    hostname: c6
+    container_name: c6
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - /home/ubuntu/scratch:/scratch
+      - /home/ubuntu/modulesfiles:/usr/share/modulefiles
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - home:/home
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    networks:
+      - slurm-network
+
+  c7:
+    image: slurm-docker-cluster:${IMAGE_TAG}
+    command: ["slurmd"]
+    hostname: c7
+    container_name: c7
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - /home/ubuntu/scratch:/scratch
+      - /home/ubuntu/modulesfiles:/usr/share/modulefiles
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - home:/home
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    networks:
+      - slurm-network
+
+  c8:
+    image: slurm-docker-cluster:${IMAGE_TAG}
+    command: ["slurmd"]
+    hostname: c8
+    container_name: c8
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - /home/ubuntu/scratch:/scratch
+      - /home/ubuntu/modulesfiles:/usr/share/modulefiles
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - home:/home
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    networks:
+      - slurm-network
+
   login:
     build:
       context: .

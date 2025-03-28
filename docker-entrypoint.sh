@@ -66,6 +66,8 @@ then
     echo "---> Starting the MUNGE Authentication service (munged) ..."
     gosu munge /usr/sbin/munged
 
+    echo 'export PS1="\[\033[01;32m\]\u@slurm.\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "' >> /etc/skel/.bashrc
+
     echo "root:${ROOT_PASSWORD}" | chpasswd
     
     echo "---> Starting sshd ..."
