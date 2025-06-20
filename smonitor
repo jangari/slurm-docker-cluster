@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# A custom Slurm node monitoring script that shows job details on active nodes.
+
+# 1. Create an associative array to hold job info for busy nodes.
+#    The key will be the node name, the value will be the job info string.
+declare -A job_info
+
+# 2. Get all RUNNING jobs from squeue and process them.
+#    The format is JobID, Partition, and the NodeList.
+#    Using -O to get full NodeList, even if long.
+squeue_output=$(squeue -t RUNNING -O "jobid:20,partition:20,nodelist:200")
+
+# Read the squeue output line by line, skipping the header.
+while IFS= read -r line; do
+    # Use awk to handle variable whitespace and grab the columns.
+    jobid=$(echo "$line" | awk '{print $1}')
+    partition=$(echo "$line" | awk '{print $2}')
+    nodelist=$(echo "$line" | awk '{print $3}')
+
+    # scontrol is the safest way to expand a hostlist like c[1-4] into c1 c2 c3 c4
+    expanded_nodes=$(scontrol show hostnames "$nodelist")
+
+    for node in $expanded_nodes; do
+        # If a node is running multiple jobs (e.g. exclusive=no), append the info.
+        if [ -n "${job_info[$node]}" ]; then
+            job_info[$node]+=", $jobid($partition)"
+        else
+            job_info[$node]="$jobid($partition)"
+        fi
+    done
+done < <(echo "$squeue_output" | tail -n +2) # tail skips the header row of squeue
+
+# 3. Get all nodes and their states from sinfo.
+#    -N lists nodes individually. -h removes the sinfo header.
+sinfo_output=$(sinfo -N -h -o "%N %T %C %m" | sort -k1,1 -u | sort -V)
+
+# 4. Print a clean header for our final report.
+printf "%-15s %-10s %-18s %-12s %s\n" "NODE" "STATE" "CPUS(A/I/O/T)" "MEMORY" "JOB(S) (PARTITION)"
+printf "%-15s %-10s %-18s %-12s %s\n" "---------------" "----------" "------------------" "------------" "----------------------"
+
+# 5. Process the sinfo output line by line to build the report.
+while IFS= read -r line; do
+    node=$(echo "$line" | awk '{print $1}')
+    state=$(echo "$line" | awk '{print $2}')
+    cpus=$(echo "$line" | awk '{print $3}')
+    mem=$(echo "$line" | awk '{print $4}')
+
+    # Check if the node name exists as a key in our job_info array.
+    if [ -n "${job_info[$node]}" ]; then
+        # If the node is busy, print its state and the job info we found.
+        printf "%-15s %-10s %-18s %-12s %s\n" "$node" "$state" "$cpus" "$mem" "${job_info[$node]}"
+    else
+        # If the node is not busy (idle, down, etc.), leave the job field blank.
+        printf "%-15s %-10s %-18s %-12s %s\n" "$node" "$state" "$cpus" "$mem" ""
+    fi
+done <<< "$sinfo_output"

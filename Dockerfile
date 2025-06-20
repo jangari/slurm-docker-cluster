@@ -101,9 +101,11 @@ COPY sbatch-wrapper.sh /usr/local/bin/sbatch-wrapper.sh
 COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 COPY mail.rc /etc/mail.rc
+COPY smonitor /usr/bin/smonitor
 RUN set -x \
     && chown slurm:slurm /etc/slurm/slurmdbd.conf \
     && chown slurm:slurm /usr/bin/mailx \
+    && chmod a+x /usr/bin/smonitor \
     && chmod 600 /etc/slurm/slurmdbd.conf \
     && chmod 750 /usr/bin/mailx \
     && chmod 755 /usr/local/bin/sbatch-wrapper.sh
